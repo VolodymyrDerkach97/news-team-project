@@ -1,0 +1,17 @@
+.list_gallery {
+    display: flex;
+}
+
+.hero_btn {
+    border: none;
+    background-color: inherit;
+    padding: 14px 28px;
+    font-size: 16px;
+    // cursor: pointer;
+    display: inline-block;
+}
+
+/* При наведении курсора мыши */
+.hero_btn:hover {
+    background: #eee;
+}
