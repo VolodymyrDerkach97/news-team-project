@@ -20,3 +20,4 @@ async function onFormSubmit(event) {
     console.log(error);
   }
 }
+import './js/API-service/api-weather';
