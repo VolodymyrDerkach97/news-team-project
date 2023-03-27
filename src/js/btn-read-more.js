@@ -1,12 +1,12 @@
 import svgSprite from '../images/icons/icons.svg';
 import { currentNewsPage } from './normalization';
 
-const readList = JSON.parse(localStorage.getItem('readList')) || [];
-
-export function readMore(event) {
+export default function readMore(event) {
   const newsId = event.target.dataset.newsId;
 
+  const readList = JSON.parse(localStorage.getItem('readList')) || [];
   const readIndex = readList.findIndex(read => read.title === newsId);
+  console.log(readIndex);
 
   if (readIndex !== -1) {
     const item = readList[readIndex];
@@ -27,11 +27,7 @@ export function readMore(event) {
   }
   const sortedReadList = [...readList].sort((a, b) => a.readAt - b.readAt);
   localStorage.setItem('readList', JSON.stringify(sortedReadList));
-  const overlay = createElementAlreadyRead();
-  event.target.insertAdjacentHTML('beforeend', overlay.outerHTML);
-}
 
-function createElementAlreadyRead() {
   const overlay = document.createElement('div');
   overlay.classList.add('news-card__overlay');
   const alreadyRead = document.createElement('p');
@@ -46,25 +42,5 @@ function createElementAlreadyRead() {
   svg.appendChild(use);
   overlay.appendChild(alreadyRead);
   overlay.appendChild(svg);
-  return overlay;
-}
-
-export function checkRead(newArray) {
-  if (!readList.length) {
-    return;
-  }
-
-  newArray.forEach(item => {
-    const btn = document.querySelector(
-      `.news-card__read-more[data-news-id="${item.title}"]`
-    );
-    if (btn && !btn.hasAttribute('data-already-read')) {
-      const readIndex = readList.findIndex(read => read.title === item.title);
-      if (readIndex !== -1) {
-        const overlay = createElementAlreadyRead();
-        btn.insertAdjacentHTML('beforeend', overlay.outerHTML);
-        btn.setAttribute('data-already-read', 'true');
-      }
-    }
-  });
+  event.target.insertAdjacentHTML('beforeend', overlay.outerHTML);
 }

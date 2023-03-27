@@ -1,9 +1,7 @@
-// import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import NewArticles from './API-service/api-news';
 import { normalizationSearch } from './normalization.js';
 import defImg from '../images/defaultimage.jpg';
-import { checkFavorites } from './btn-add-remove';
-import { checkRead } from './btn-read-more';
 
 import renderSearchNews from './renderSerchNews';
 
@@ -26,8 +24,6 @@ async function onFormSubmit(e) {
     const normalizedResults = normalizationSearch(res);
     btnAddtoFavEl.innerHTML = '';
     renderSearchNews(normalizedResults);
-    checkFavorites(normalizedResults);
-    checkRead(normalizedResults);
   } catch (error) {
     console.log(error);
   }

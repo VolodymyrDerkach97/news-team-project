@@ -1,9 +1,6 @@
 import NewArticles from './API-service/api-news';
 import { renderArticle } from './renderArticle';
 import normalization from './normalization';
-import { checkFavorites } from './btn-add-remove';
-import { checkRead } from './btn-read-more';
-import { normalizationPopular } from './normalization';
 
 const pg = document.getElementById('pagination');
 const ulPageContainer = document.querySelector('.page-container');
@@ -15,11 +12,11 @@ window.addEventListener('load', onFirstLoad);
 
 const newArticles = new NewArticles();
 
-const pageDesktop = 8;
-const pageTablet = 7;
-const pageMobile = 4;
+const pageDesktop = 9;
+const pageTablet = 8;
+const pageMobile = 5;
 
-let numCardsOnPages = 9;
+let numCardsOnPages;
 
 const desktopWidth = window.matchMedia('(min-width: 1280px)');
 const tabletWidth = window.matchMedia(
@@ -27,15 +24,11 @@ const tabletWidth = window.matchMedia(
 );
 const mobileWidth = window.matchMedia('(max-width: 766px)');
 
-console.log('desktopWidth ', desktopWidth);
-console.log('tabletWidth ', tabletWidth);
-console.log('mobileWidth ', mobileWidth);
-
-if (desktopWidth.matches) {
+if (desktopWidth.matches === true) {
   numCardsOnPages = pageDesktop;
-} else if (tabletWidth.matches) {
+} else if (tabletWidth.matches === true) {
   numCardsOnPages = pageTablet;
-} else if (mobileWidth.matches) {
+} else if (mobileWidth.matches === true) {
   numCardsOnPages = pageMobile;
 }
 
@@ -48,17 +41,14 @@ const valuePage = {
 async function onFirstLoad(event) {
   event.preventDefault();
   try {
-    const res = await newArticles.fetchMostPopular();
-
+    const res = await newArticles.fetchArtic();
+    // totalObjsApi = res.results; // 20[]
     const totalNumberPagesApi = res.results.length; // 20
     valuePage.totalPages = Math.ceil(totalNumberPagesApi / numCardsOnPages); // 3
-    const normalizedResults = normalizationPopular(res);
+    const normalizedResults = normalization(res);
     const newArray = normalizedResults.slice(0, numCardsOnPages);
-
     addCard.innerHTML = '';
     renderArticle(newArray);
-    checkFavorites(newArray);
-    checkRead(newArray);
   } catch (error) {
     console.log(error);
   }

@@ -1,8 +1,8 @@
 import svgSprite from '../images/icons/icons.svg';
-import { currentNewsPage } from './normalization';
+import { normalization, currentNewsPage } from './normalization';
 
 function createIcon(bool, btn) {
-  const icon = !bool ? `${svgSprite}#icon-favorite` : `${svgSprite}#icon-heart`;
+  const icon = bool ? `${svgSprite}#icon-heart` : `${svgSprite}#icon-favorite`;
   const svg = document.createElement('svg');
   svg.classList.add('news-card__favorite-icon');
   svg.setAttribute('width', '13');
@@ -13,9 +13,8 @@ function createIcon(bool, btn) {
   btn.insertAdjacentHTML('beforeend', svg.outerHTML);
 }
 
-export function addToFavorites(event) {
+export default function addToFavorites(event) {
   const btn = event.target.closest('.news-card__favorite-button');
-
   const newsId = btn.dataset.newsId;
 
   const favoriteList = JSON.parse(localStorage.getItem('favoriteList')) || [];
@@ -26,38 +25,14 @@ export function addToFavorites(event) {
 
   const bool = favoriteIndex === -1;
 
+  btn.textContent = bool ? 'Remove from favorite' : 'Add to favorite';
+  createIcon(bool, btn);
+
   if (bool) {
     const currentNews = currentNewsPage.find(news => news.title === newsId);
     favoriteList.push(currentNews);
   } else {
     favoriteList.splice(favoriteIndex, 1);
   }
-
   localStorage.setItem('favoriteList', JSON.stringify(favoriteList));
-
-  btn.textContent = bool ? 'Remove from favorite' : 'Add to favorite';
-  createIcon(bool, btn);
-}
-
-export function checkFavorites(newArray) {
-  const favoriteList = JSON.parse(localStorage.getItem('favoriteList')) || [];
-
-  if (!favoriteList.length) {
-    return;
-  }
-
-  newArray.forEach(item => {
-    const btn = document.querySelector(
-      `.news-card__favorite-button[data-news-id="${item.title}"]`
-    );
-    if (btn) {
-      const favoriteIndex = favoriteList.findIndex(
-        favorite => favorite.title === item.title
-      );
-      const isFavorite = favoriteIndex !== -1;
-      btn.setAttribute('data-favorite', isFavorite);
-      btn.textContent = isFavorite ? 'Remove from favorite' : 'Add to favorite';
-      createIcon(true, btn);
-    }
-  });
 }
