@@ -16,7 +16,6 @@ const targetElement = document.querySelector('.mobile-container');
     mobileMenu.classList.toggle('is-open');
 
     disableBodyScroll(targetElement);
-    // const scrollLockMethod = !isMenuOpen ? disableBodyScroll : enableBodyScroll;
   };
 
   openMenuBtn.addEventListener('click', toggleMenu);
