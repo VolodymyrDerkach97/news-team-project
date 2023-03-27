@@ -6,6 +6,8 @@ import './js/API-service/api-weather';
 import './js/current-page';
 import './js/categories';
 import './js/pagination';
+import './js/openModalForm';
+import './js/loginFirebase';
 
 const up = document.querySelector('.btn-scroll');
 
