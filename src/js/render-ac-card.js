@@ -10,12 +10,12 @@ const newAccorEl = document.querySelector('.accordion');
 
 export function renderAccordion(){
   containerEl.insertAdjacentHTML('beforeEnd', pageEmpty());
-  const response = JSON.parse(localStorage.getItem('favoriteList'));
+  const response = JSON.parse(localStorage.getItem('readList'));
 
   const uniqueDates = new Set();
  
-  response.forEach(({published_date}) => {
-      const date = new Date(published_date);
+  response.forEach(({readAt}) => {
+      const date = new Date(readAt);
       const formattedDate = date.toLocaleDateString('en-GB', {
           day: '2-digit',
           month: '2-digit',
@@ -50,9 +50,9 @@ export function renderAccordion(){
 renderAccordion()
 
 export function pageEmpty(){
-  const items = JSON.parse(localStorage.getItem('favoriteList'));
+  const items = JSON.parse(localStorage.getItem('readList'));
 
-  if (items && items.length === 0){
+  if (!items || items.length === 0){
     return `
     <div class="page-empty">
     <h2 class="page-empty__text">You don't have any read news</h2>
