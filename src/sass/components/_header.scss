@@ -244,3 +244,24 @@
         }
     }
 }
+
+// .mob-current__page {
+//     position: relative;
+//     pointer-events: none;
+//     cursor: default;
+
+//     &::after {
+//         position: absolute;
+//         z-index: -1;
+//         display: flex;
+//         content: "";
+//         width: 100%;
+//         height: 100%;
+//         border-radius: 2px;
+//         background-color: $color-accent;
+//     }
+// }
+
+// .mobile-menu__link.mob-current__page {
+//     color: $color-white-secondary;
+// }
