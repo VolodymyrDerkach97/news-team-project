@@ -90,6 +90,16 @@
   height: 395px;
   object-fit: cover;
   border-radius: 4px;
+
+  @media screen and (max-width: $tablet-less) {
+    max-width: 288px;
+  }
+  @media screen and (min-width: $tablet) {
+    max-width: 353px;
+  }
+  @media screen and (min-width: $desktop) {
+    min-width: 394px;
+  }
 }
 
 .news-card__read-more {
@@ -179,4 +189,8 @@
   top: 24px;
   right: 22px;
   fill: #00dd73;
+}
+
+.container .favorite {
+  padding-top: 30px;
 }
