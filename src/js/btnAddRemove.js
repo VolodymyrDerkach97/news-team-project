@@ -2,7 +2,7 @@ import svgSprite from '../images/icons/icons.svg';
 import { currentNewsPage } from './normalization';
 
 
-function createIcon(bool, btn) {
+export function createIcon(bool, btn) {
   const icon = !bool ? `${svgSprite}#icon-favorite` : `${svgSprite}#icon-heart`;
   const svg = document.createElement('svg');
   svg.classList.add('news-card__favorite-icon');

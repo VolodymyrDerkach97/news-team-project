@@ -1,30 +1,47 @@
 import { initAccordion } from './accordion';
+import { createIcon } from './btnAddRemove';
 import svgSprite from '../images/icons/icons.svg';
 import defImgPng from '../images/default_hidden.png';
 import defImg from '../images/defaultimage.jpg';
 import './btnAddRemove';
-import { checkFavorites } from './btnAddRemove';
 
 const containerEl = document.querySelector('.container__read');
 const newAccorEl = document.querySelector('.accordion');
-const response = JSON.parse(localStorage.getItem('readList')) || [];
+const readList = JSON.parse(localStorage.getItem('readList')) || [];
 const favoriteList = JSON.parse(localStorage.getItem('favoriteList')) || [];
 
+function checkFavorites() {
+  const commonElements = readList.filter(element =>
+    favoriteList.some(favorite => favorite.title === element.title)
+  );
+
+  readList.forEach(item => {
+    const btn = document.querySelector(
+      `.news-card__favorite-button[data-news-id="${item.title}"]`
+    );
+
+    if (commonElements.includes(item)) {
+      btn.setAttribute('data-favorite', true);
+      btn.textContent = 'Remove from favorite';
+      createIcon(true, btn);
+    } else if (btn && !commonElements.includes(item)) {
+      btn.setAttribute('data-favorite', false);
+      btn.textContent = 'Add to favorite ';
+      createIcon(false, btn);
+    }
+  });
+}
+
 containerEl.addEventListener('click', function (event) {
-  checkFavorites(favoriteList);
-});
-containerEl.addEventListener('click', function (event) {
+  checkFavorites();
   const targetEl = event.target;
   if (targetEl.classList.contains('news-card__favorite-button')) {
-    console.log('this is favorire');
     addToFavorites(event);
-  } else if (targetEl.classList.contains('news-card__read-more')) {
-    console.log('news-card__read-more');
   }
 });
 
 export function pageEmpty() {
-  if (!response || response.length === 0) {
+  if (!readList || readList.length === 0) {
     return `
     <div class="page-empty">
     <h2 class="page-empty__text">You don't have any read news</h2>
@@ -34,8 +51,8 @@ export function pageEmpty() {
   return '';
 }
 
-function newFormatArray(response) {
-  const formattedItems = response.map(item => {
+function newFormatArray(readList) {
+  const formattedItems = readList.map(item => {
     const newDate = new Date(item.readAt);
     const formattedReadAt = `${newDate
       .getDate()
@@ -71,7 +88,7 @@ function newFormatArray(response) {
   return formattedItems;
 }
 
-const formattedItems = newFormatArray(response);
+const formattedItems = newFormatArray(readList);
 
 export function renderAccordion() {
   containerEl.insertAdjacentHTML('beforeEnd', pageEmpty());
@@ -183,25 +200,10 @@ function addMarkupToCards() {
 
 addMarkupToCards();
 
-function createIcon(bool, btn) {
-  const icon = !bool ? `${svgSprite}#icon-favorite` : `${svgSprite}#icon-heart`;
-  const svg = document.createElement('svg');
-  svg.classList.add('news-card__favorite-icon');
-  svg.setAttribute('width', '13');
-  svg.setAttribute('height', '12');
-  const use = document.createElement('use');
-  use.setAttribute('href', icon);
-  svg.appendChild(use);
-  btn.insertAdjacentHTML('beforeend', svg.outerHTML);
-}
-
 function addToFavorites(event) {
   const btn = event.target.closest('.news-card__favorite-button');
 
   const newsId = btn.dataset.newsId;
-
-  const readList = JSON.parse(localStorage.getItem('readList')) || [];
-  const favoriteList = JSON.parse(localStorage.getItem('favoriteList')) || [];
 
   const favoriteIndex = favoriteList.findIndex(
     favorite => favorite.title === newsId
