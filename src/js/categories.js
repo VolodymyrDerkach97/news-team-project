@@ -212,6 +212,40 @@ const buttonsEl = document.querySelector('.categories__buttons');
 let numCardsOnPages = 8;
 const addCard = document.querySelector('.news-card');
 
+import { pagination } from './pagination';
+
+const valuePage = {
+  curPage: 1,
+  numLinksTwoSide: 1,
+  totalPages: 3,
+  numCardsOnPages: null,
+};
+const desktopWidth = window.matchMedia('(min-width: 1280px)');
+const tabletWidth = window.matchMedia(
+  '(min-width: 767px) and (max-width: 1279px)'
+);
+const mobileWidth = window.matchMedia('(max-width: 766px)');
+const pageDesktop = 8;
+const pageTablet = 7;
+const pageMobile = 4;
+if (valuePage.curPage >= 2) {
+  if (desktopWidth.matches) {
+    numCardsOnPages = pageDesktop + 1;
+  } else if (tabletWidth.matches) {
+    numCardsOnPages = pageTablet + 1;
+  } else if (mobileWidth.matches) {
+    numCardsOnPages = pageMobile + 1;
+  }
+} else {
+  if (desktopWidth.matches) {
+    numCardsOnPages = pageDesktop;
+  } else if (tabletWidth.matches) {
+    numCardsOnPages = pageTablet;
+  } else if (mobileWidth.matches) {
+    numCardsOnPages = pageMobile;
+  }
+}
+
 buttonsEl.addEventListener('click', async function (e) {
   if (e.target.nodeName !== 'BUTTON') {
     return;
@@ -220,6 +254,11 @@ buttonsEl.addEventListener('click', async function (e) {
 
   try {
     const res = await newArticles.fetchCategories(selectedCategory);
+
+    const totalNumberPagesApi = res.results.length; // 20
+    valuePage.totalPages = Math.ceil(totalNumberPagesApi / numCardsOnPages); // 3
+    pagination(valuePage);
+
     const normalizedResults = normalizeData(res, 'categories');
     addCard.setAttribute('data-page', selectedCategory);
     const newArray = normalizedResults.slice(0, numCardsOnPages);

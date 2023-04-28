@@ -7,13 +7,49 @@ import { checkRead } from './btnReadMore';
 import renderSearchNews from './renderSerchNews';
 
 const newArticles = new NewArticles();
-let numCardsOnPages = 8;
+
 const addCard = document.querySelector('.news-card');
 const icon2 = document.querySelector('.search-box__icon-svg');
 const icon = document.querySelector('.search-box__icon');
 const search = document.querySelector('.search-box');
 const newEl = document.querySelector('.container__home-search');
-const pagination = document.querySelector('.pagination');
+const paginationEl = document.querySelector('.pagination');
+import { pagination } from './pagination';
+
+const valuePage = {
+  curPage: 1,
+  numLinksTwoSide: 1,
+  totalPages: null,
+  numCardsOnPages: null,
+};
+
+const desktopWidth = window.matchMedia('(min-width: 1280px)');
+const tabletWidth = window.matchMedia(
+  '(min-width: 767px) and (max-width: 1279px)'
+);
+const mobileWidth = window.matchMedia('(max-width: 766px)');
+
+const pageDesktop = 8;
+const pageTablet = 7;
+const pageMobile = 4;
+
+if (valuePage.curPage >= 2) {
+  if (desktopWidth.matches) {
+    valuePage.numCardsOnPages = pageDesktop + 1;
+  } else if (tabletWidth.matches) {
+    valuePage.numCardsOnPages = pageTablet + 1;
+  } else if (mobileWidth.matches) {
+    valuePage.numCardsOnPages = pageMobile + 1;
+  }
+} else {
+  if (desktopWidth.matches) {
+    valuePage.numCardsOnPages = pageDesktop;
+  } else if (tabletWidth.matches) {
+    valuePage.numCardsOnPages = pageTablet;
+  } else if (mobileWidth.matches) {
+    valuePage.numCardsOnPages = pageMobile;
+  }
+}
 
 search.addEventListener('submit', onFormSubmit);
 async function onFormSubmit(e) {
@@ -24,9 +60,15 @@ async function onFormSubmit(e) {
   try {
     const res = await newArticles.fetchSearch(serchValue);
     const normalizedResults = normalizeData(res, 'search');
+    const totalNumberPagesApi = normalizedResults.length; // 20
+    valuePage.totalPages = Math.ceil(
+      totalNumberPagesApi / valuePage.numCardsOnPages
+    ); // 3
+
+    pagination(valuePage);
 
     if (normalizedResults.length === 0) {
-      pagination.classList.add('visually-hidden');
+      paginationEl.classList.add('visually-hidden');
       addCard.innerHTML = `
       <div class="page-empty">
       <h2 class="page-empty__text">We haven’t found news from this category</h2>
@@ -34,10 +76,10 @@ async function onFormSubmit(e) {
       </div>`;
       return;
     }
-    pagination.classList.remove('visually-hidden');
-
+    paginationEl.classList.remove('visually-hidden');
+    console.log(valuePage.totalPages);
     addCard.setAttribute('data-page', serchValue);
-    const newArray = normalizedResults.slice(0, numCardsOnPages);
+    const newArray = normalizedResults.slice(0, valuePage.numCardsOnPages);
 
     addCard.innerHTML = '';
     renderSearchNews(newArray);
